@@ -3,6 +3,7 @@ import {ApiError} from "../utils/APIerror.js";
 import {User} from "../models/user.model.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/APIresponse.js";
+import fs from "fs"
 
 const registerUser= asyncHandler(async(req,res)=>{
     // get user details from frontend
@@ -14,20 +15,20 @@ const registerUser= asyncHandler(async(req,res)=>{
    // remove password and refresh token field from response
    // check for user creation
    // return res
-   const {fullName,email,password,username}=req.body
-   console.log(fullName,email,password,username);
+   const {fullName,email,password,username}=req.body;
    if([fullName,email,password,username].some((filed)=>filed?.trim()==="")){
       throw new ApiError(400,"All fields are required")
    }
-   const existedUser=User.findOne({
+   const existedUser= await User.findOne({
       $or:[{username},{email}]
    })
-   if(existedUser){
-      throw new ApiError(409," user with username or email already exits")
-   }
-
+   
    const avatarLocalPath = req.files?.avatar[0]?.path;
-   const coverImageLocalPath =req.files?.coverImage[0]?.path;
+   let coverImageLocalPath;
+   if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length >0){
+      coverImageLocalPath =req.files.coverImage[0].path;
+ 
+}
 
    if(!avatarLocalPath){
       throw new ApiError(400,"avatar is required")
@@ -38,6 +39,13 @@ const registerUser= asyncHandler(async(req,res)=>{
    throw new ApiError(400,"avatar is required")
   }
 
+  if(existedUser){
+   fs.unlinkSync(avatarLocalPath)
+   fs.unlinkSync(coverImageLocalPath)
+   throw new ApiError(409," user with username or email already exits")
+}
+
+
  const user=await User.create({
    fullName,
    avatar:avatar.url,
@@ -47,10 +55,7 @@ const registerUser= asyncHandler(async(req,res)=>{
    username:username.toLowerCase()
   })
 
-
-  const createdUser=await user.findById(user._id).select(
-   "-password -refreshToken"
-  )
+  const createdUser = await User.findById(user._id).select("-password -refreshToken");
 
 if(!createdUser){
      throw new ApiError(500,"something went wrong while  registering the user")
