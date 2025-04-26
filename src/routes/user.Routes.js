@@ -2,6 +2,7 @@ import { Router } from "express";
 import { loginUser, logOutUser, registerUser } from "../controllers/user.controller.js";
 import {upload} from "../middlewares/multer.middleware.js"
 import{ VerifyJWT} from "../middlewares/auth.middleware.js"
+import {refreshAccessToken} from "../controllers/user.controller.js"
 const router = Router()
 
 router.route("/register").post(
@@ -22,4 +23,5 @@ loginUser
 )
 
 router.route('/logout').post(VerifyJWT,logOutUser)
+router.route("/refresh-token").post(refreshAccessToken)
 export default router 

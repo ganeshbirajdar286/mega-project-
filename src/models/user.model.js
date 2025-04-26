@@ -67,7 +67,7 @@ UserSchema.methods.generateAccessToken = function () {
     }
 )
 }
-UserSchema.methods.generateRfereshToken = async function () {
+UserSchema.methods.generateRfereshToken =  function () {
     return jwt.sign({
         _id:this._id,
     },process.env.REFRESH_TOKEN_SECRET,
