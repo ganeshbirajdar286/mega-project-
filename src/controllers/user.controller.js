@@ -80,7 +80,7 @@ if(!createdUser){
       new ApiResponse(200,createdUser,"user successfully register")
      )
 
-})
+}) 
 
 const loginUser = asyncHandler(async(req,res)=>{
    const {email,username,password}=req.body 
