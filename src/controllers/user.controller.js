@@ -5,7 +5,7 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/APIresponse.js";
 import fs from "fs"
 import jwt from "jsonwebtoken"
-import { channel } from "diagnostics_channel";
+
 
 const generateAccessAndRefereshTokens= async(userId)=>{
    try {
