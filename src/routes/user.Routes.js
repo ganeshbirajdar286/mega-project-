@@ -25,8 +25,8 @@ loginUser
 router.route('/logout').post(VerifyJWT,logOutUser)
 router.route("/refresh-token").post(refreshAccessToken)
 router.route("/change-password").post(VerifyJWT,changeCurrentPassword)
-router.route("/current-user").post(VerifyJWT,getCurrentUser)
-router.route("/updated-account").patch(VerifyJWT,updatedUserDetails) // update is taken place that why we use patch instayed of post.if we use post it update wholt model
+router.route("/current-user").get(VerifyJWT,getCurrentUser)
+router.route("/updated-account").patch(VerifyJWT,updatedUserDetails) // update is taken place that why we use patch instayed of post.if we use post it update whole model
 router.route("/avatar").patch(VerifyJWT,upload.single("avatar"),avatarUpdate)
 router.route("/cover-image").patch(VerifyJWT,upload.single("coverImage"),coverImageUpdate)
 router.route("/c/:username").get(VerifyJWT, getUserChannelProfile)

@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
 
 
+
 const generateAccessAndRefereshTokens= async(userId)=>{
    try {
       const user= await User.findById(userId);
@@ -210,9 +211,11 @@ const changeCurrentPassword=asyncHandler(async(req,res)=>{
 
 
 const getCurrentUser = asyncHandler(async(req,res)=>{
-   return req
-   .status(200)
-   .json(200,req.user,"user fetched successfully")
+   return res
+      .status(200)
+      .json(
+         new ApiResponse(200,req.user,"user fetched successfully")
+      )
 })
 
 const updatedUserDetails=asyncHandler(async(req,res)=>{
@@ -258,7 +261,6 @@ const avatarUpdate=asyncHandler(async(req,res)=>{
          new:true
       }
    ).select("-password")
-
 
    return res
    .status(200)
@@ -378,7 +380,7 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
     const user =await User.aggregate([
       {
          $match:{
-            _id:mongoose.Types.ObjectId(req.user._id)  // req.user._id return string not mongodb id this string goto mongoose and mongoose tell monogobd it's id.  but when aggregation take place this code directly go to mongodb not to mongoose.so that why we have to use  "mongoose.Types.ObjectId(req.user._id)" .this tell  mongodb that this is mongodb id
+            _id: new mongoose.Types.ObjectId(req.user._id)  // req.user._id return string not mongodb id this string goto mongoose and mongoose tell monogobd it's id.  but when aggregation take place this code directly go to mongodb not to mongoose.so that why we have to use  "mongoose.Types.ObjectId(req.user._id)" .this tell  mongodb that this is mongodb id
          }
       },
       {
@@ -393,8 +395,7 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
                      from:"users",
                      localField:"owner",
                      foreignField:"_id",
-                     as:"owner"
-                  },
+                     as:"owner",
                   pipeline:[
                      {
                         $project:{
@@ -404,7 +405,8 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
                         }
                      }
                   ]
-               },
+               }
+            },
                {
                   $addFields:{
                        owner:{
