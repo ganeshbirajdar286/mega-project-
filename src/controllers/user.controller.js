@@ -59,8 +59,6 @@ const registerUser= asyncHandler(async(req,res)=>{
   }
 
   if(existedUser){
-   fs.unlinkSync(avatarLocalPath)
-   fs.unlinkSync(coverImageLocalPath)
    throw new ApiError(409," user with username or email already exits")
 }
 
